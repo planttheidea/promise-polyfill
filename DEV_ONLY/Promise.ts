@@ -45,6 +45,7 @@ function createPromisePolyfill(schedule: Scheduler) {
     }
   }
 
+  // "global" config for use of debug tracing
   let isUsingDebugTrace = false;
 
   /**
@@ -69,15 +70,11 @@ function createPromisePolyfill(schedule: Scheduler) {
       }
 
       if (isUsingDebugTrace) {
+        // handler name used in debug tracing for sibling promises in chain
         this._handlerName = null;
+        // captured error stack used to fake the full promise error chain
         this._stack = getNormalizedStack();
       }
-
-      // store state which can be PENDING, FULFILLED or REJECTED
-      this._state = PENDING;
-
-      // store value once FULFILLED or REJECTED
-      this._value = null;
 
       // store success & failure handlers
       this._handlers = [];
@@ -91,6 +88,14 @@ function createPromisePolyfill(schedule: Scheduler) {
       // the previous promise in the sibling chain
       this._previous = null;
 
+      // store state which can be PENDING, FULFILLED or REJECTED
+      this._state = PENDING;
+
+      // store value once FULFILLED or REJECTED
+      this._value = null;
+
+      // execute constructor callback synchronously, as all resolve/rejects
+      // will be handled by the scheduler
       this._execute(executor);
     }
 
@@ -605,11 +610,7 @@ function createPromisePolyfill(schedule: Scheduler) {
 
   const NO_STACK_TRACE = '(No stack trace)';
   const SYNTAX_ERROR = 'SyntaxError';
-
-  type ErrorLike = {
-    message: string;
-    stack: string[];
-  };
+  const DEBUG_TRACING_HEADER = 'From previous event:';
 
   /**
    * @function getNormalizedStackLayer
@@ -683,6 +684,11 @@ function createPromisePolyfill(schedule: Scheduler) {
     return cleanStack;
   }
 
+  type NormalizedError = {
+    message: string;
+    stack: string[];
+  };
+
   /**
    * @function getNormalizedError
    *
@@ -692,7 +698,7 @@ function createPromisePolyfill(schedule: Scheduler) {
    * @param error the error to normalize
    * @returns the normalized error
    */
-  function getNormalizedError(error: Error): ErrorLike {
+  function getNormalizedError(error: Error): NormalizedError {
     const stack = getStackArray(error);
 
     return {
@@ -720,6 +726,8 @@ function createPromisePolyfill(schedule: Scheduler) {
           return stack.slice(index);
         }
       }
+
+      return [];
     }
   }
 
@@ -754,7 +762,7 @@ function createPromisePolyfill(schedule: Scheduler) {
       previous = previous._previous || previous._parent;
     }
 
-    const finalEntry = addedStacks.pop();
+    const topLevelStack = addedStacks.pop();
 
     const { length } = addedStacks;
 
@@ -763,7 +771,7 @@ function createPromisePolyfill(schedule: Scheduler) {
 
       for (let index = 0; index < stack.length; index++) {
         if (!INTERNAL_STACK_LAYER.test(stack[index])) {
-          newStack.push('From previous event:', stack[index]);
+          newStack.push(DEBUG_TRACING_HEADER, stack[index]);
 
           break;
         }
@@ -771,7 +779,7 @@ function createPromisePolyfill(schedule: Scheduler) {
     }
 
     // top-level stack
-    newStack.push('From previous event:', ...finalEntry);
+    newStack.push(DEBUG_TRACING_HEADER, ...topLevelStack);
 
     return newStack.join('\n');
   }
