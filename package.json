@@ -1,0 +1,26 @@
+{
+  "author": "tony_quetano@planttheidea.com",
+  "browser": "dist/promise-polyfill.js",
+  "description": "A playground for the Promise polyfill library",
+  "devDependencies": {
+    "html-webpack-plugin": "^3.2.0",
+    "in-publish": "^2.0.0",
+    "ts-loader": "^6.0.1",
+    "tslint": "^5.16.0",
+    "tslint-config-airbnb": "^5.11.1",
+    "tslint-loader": "^3.5.4",
+    "typescript": "^3.4.5",
+    "webpack": "^4.31.0",
+    "webpack-cli": "^3.3.2",
+    "webpack-dev-server": "^3.4.1"
+  },
+  "license": "UNLICENSED",
+  "main": "dist/promise-polyfill.cjs.js",
+  "module": "dist/promise-polyfill.esm.js",
+  "name": "promise-polyfill",
+  "scripts": {
+    "dev": "NODE_ENV=development webpack-dev-server --colors --progress --config=webpack/webpack.config.js"
+  },
+  "sideEffects": false,
+  "version": "0.0.0"
+}
