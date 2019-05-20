@@ -5,6 +5,8 @@
     "function-name": false,
     "import-name": false,
     "no-increment-decrement": false,
+    "no-parameter-reassignment": false,
+    "no-this-assignment": false,
     "object-shorthand-properties-first": false,
     "prefer-array-literal": false,
     "ter-arrow-parens": true,

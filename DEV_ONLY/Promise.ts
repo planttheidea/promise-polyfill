@@ -13,37 +13,37 @@ function createPromisePolyfill(schedule: Scheduler) {
     new (...args): Type;
   }
 
-  class RejectionEvent {
-    bubbles: boolean;
-    cancelable: boolean;
-    cancelBubble: boolean;
-    captures: boolean;
-    currentTarget: any;
-    promise: PromisePolyfill<any>;
-    reason: any;
-    srcElement: null;
-    target: any;
-    timeStamp: number;
-    type: string;
+  // class PromiseRejectionEvent {
+  //   bubbles: boolean;
+  //   cancelable: boolean;
+  //   cancelBubble: boolean;
+  //   captures: boolean;
+  //   currentTarget: any;
+  //   promise: PromisePolyfill<any>;
+  //   reason: any;
+  //   srcElement: null;
+  //   target: any;
+  //   timeStamp: number;
+  //   type: string;
 
-    constructor(type: string, { promise, reason }) {
-      this.bubbles = false;
-      this.cancelable = true;
-      this.cancelBubble = false;
-      this.captures = false;
-      this.currentTarget = window;
-      this.promise = promise;
-      this.reason = reason;
-      this.srcElement = null;
-      this.target = window;
-      this.timeStamp = Date.now();
-      this.type = type;
-    }
+  //   constructor(type: string, { promise, reason }) {
+  //     this.bubbles = false;
+  //     this.cancelable = true;
+  //     this.cancelBubble = false;
+  //     this.captures = false;
+  //     this.currentTarget = window;
+  //     this.promise = promise;
+  //     this.reason = reason;
+  //     this.srcElement = null;
+  //     this.target = window;
+  //     this.timeStamp = Date.now();
+  //     this.type = type;
+  //   }
 
-    toString() {
-      return this.reason.toString();
-    }
-  }
+  //   toString() {
+  //     return this.reason.toString();
+  //   }
+  // }
 
   // "global" config for use of debug tracing
   let isUsingDebugTrace = false;
@@ -458,7 +458,7 @@ function createPromisePolyfill(schedule: Scheduler) {
 
           handlers.length = 0;
         } else {
-          // const event = new RejectionEvent('unhandledrejection', {
+          // const event = new PromiseRejectionEvent('unhandledrejection', {
           //   // @ts-ignore
           //   promise: this,
           //   reason,
@@ -467,7 +467,7 @@ function createPromisePolyfill(schedule: Scheduler) {
           /**
            * @NOTE REMOVE THIS
            *
-           * I had to do this because in the web, RejectionEvent is a real event, and
+           * I had to do this because in the web, PromiseRejectionEvent is a real event, and
            * TypeScript does not allow extending native Event class. So, this is just a fake.
            */
           const event = new Event('unhandledrejection');
