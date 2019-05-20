@@ -590,6 +590,14 @@ function createPromisePolyfill(schedule: Scheduler) {
      * @returns {Promise} the resolved or rejected promise
      */
     then(onFulfilled?: Function | void, onRejected?: Function | void) {
+      if (typeof onFulfilled !== 'function') {
+        onFulfilled = undefined;
+      }
+
+      if (typeof onRejected !== 'function') {
+        onRejected = undefined;
+      }
+
       const next = new (this.constructor as Constructor<PromisePolyfill<any>>)(
         (thenResolve, thenReject) => {
           this._handle([onFulfilled, onRejected, thenResolve, thenReject]);

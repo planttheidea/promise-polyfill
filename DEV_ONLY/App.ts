@@ -41,6 +41,15 @@ P.resolve('top-level resolve').then(function outer() {
   });
 });
 
+/* ----------- UNCALLABLE THEN HANDLERS ----------- */
+
+// P.resolve()
+//   // @ts-ignore
+//   .then('foo')
+//   .then(() => {
+//     console.log('bar');
+//   });
+
 // Promise.resolve().then(function outer() {
 //   return Promise.resolve().then(function () {
 //     return Promise.resolve('needs parent')
